@@ -1,0 +1,120 @@
+#! /usr/bin/env python3
+
+import sys
+import json
+from datetime import datetime
+import requests
+
+
+#############
+# Parsers
+#############
+
+
+def parser_fip(res):
+    res = json.loads(res)
+    title = res['data']['now']['song']['title']
+    artists = ', '.join(res['data']['now']['song']['interpreters'])
+    return "{} - {}".format(artists, title)
+
+
+def parser_france_inter(res):
+    res = json.loads(res)
+    now = datetime.now()
+    timestamp = datetime.timestamp(now)
+    for program in res:
+        if "stop" in program.keys():
+            stop = program["stop"]
+        elif "end" in program.keys():
+            stop = program["end"]
+        if program["start"] < timestamp and stop > timestamp:
+            return "{} {} - {}".format(program["conceptTitle"], program["conceptOwner"], program["expressionTitle"])
+
+
+def parser_tsfjazz(res):
+    res = json.loads(res)
+    return "{} - {}".format(res['artist'], res['title'])
+
+
+#############
+# Webradio Index
+#############
+
+
+INDEX = [
+    {"name": "FIP",
+     "pattern": "/fip/",
+     "url": "https://www.fip.fr/latest/api/graphql?operationName=Now&variables=%7B%22bannerPreset%22%3A%22600x600-noTransform%22%2C%22stationId%22%3A7%2C%22previousTrackLimit%22%3A3%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%228a931c7d177ff69709a79f4c213bd2403f0c11836c560bc22da55628d8100df8%22%7D%7D",
+     "parser": parser_fip},
+    {"name": "FIP Rock",
+     "pattern": "fiprock",
+     "url": "https://www.fip.fr/latest/api/graphql?operationName=Now&variables=%7B%22bannerPreset%22%3A%22600x600-noTransform%22%2C%22stationId%22%3A70%2C%22previousTrackLimit%22%3A3%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%228a931c7d177ff69709a79f4c213bd2403f0c11836c560bc22da55628d8100df8%22%7D%7D",
+     "parser": parser_fip},
+    {"name": "FIP Electro",
+     "pattern": "fipelectro",
+     "url": "https://www.fip.fr/latest/api/graphql?operationName=Now&variables=%7B%22bannerPreset%22%3A%22600x600-noTransform%22%2C%22stationId%22%3A74%2C%22previousTrackLimit%22%3A3%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%228a931c7d177ff69709a79f4c213bd2403f0c11836c560bc22da55628d8100df8%22%7D%7D",
+     "parser": parser_fip},
+    {"name": "FIP Reggae",
+     "pattern": "fipreggae",
+     "url": "https://www.fip.fr/latest/api/graphql?operationName=Now&variables=%7B%22bannerPreset%22%3A%22600x600-noTransform%22%2C%22stationId%22%3A71%2C%22previousTrackLimit%22%3A3%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%228a931c7d177ff69709a79f4c213bd2403f0c11836c560bc22da55628d8100df8%22%7D%7D",
+     "parser": parser_fip},
+    {"name": "FIP Tout nouveau",
+     "pattern": "fipnouveautes",
+     "url": "https://www.fip.fr/latest/api/graphql?operationName=Now&variables=%7B%22bannerPreset%22%3A%22600x600-noTransform%22%2C%22stationId%22%3A70%2C%22previousTrackLimit%22%3A3%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%228a931c7d177ff69709a79f4c213bd2403f0c11836c560bc22da55628d8100df8%22%7D%7D",
+     "parser": parser_fip},
+    {"name": "FIP Jazz",
+     "pattern": "fipjazz",
+     "url": "https://www.fip.fr/latest/api/graphql?operationName=Now&variables=%7B%22bannerPreset%22%3A%22600x600-noTransform%22%2C%22stationId%22%3A65%2C%22previousTrackLimit%22%3A3%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%228a931c7d177ff69709a79f4c213bd2403f0c11836c560bc22da55628d8100df8%22%7D%7D",
+     "parser": parser_fip},
+    {"name": "FIP Monde",
+     "pattern": "fipworld",
+     "url": "https://www.fip.fr/latest/api/graphql?operationName=Now&variables=%7B%22bannerPreset%22%3A%22600x600-noTransform%22%2C%22stationId%22%3A69%2C%22previousTrackLimit%22%3A3%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%228a931c7d177ff69709a79f4c213bd2403f0c11836c560bc22da55628d8100df8%22%7D%7D",
+     "parser": parser_fip},
+    {"name": "FIP Groove",
+     "pattern": "fipgroove",
+     "url": "https://www.fip.fr/latest/api/graphql?operationName=Now&variables=%7B%22bannerPreset%22%3A%22600x600-noTransform%22%2C%22stationId%22%3A66%2C%22previousTrackLimit%22%3A3%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%228a931c7d177ff69709a79f4c213bd2403f0c11836c560bc22da55628d8100df8%22%7D%7D",
+     "parser": parser_fip},
+    {"name": "France Culture",
+     "pattern": "franceculture",
+     "url": "https://www.franceculture.fr/ajax/program/live",
+     "parser": parser_france_inter},
+    {"name": "France Inter",
+     "pattern": "franceinter",
+     "url": "https://www.franceinter.fr/programmes?xmlHttpRequest=1&ignoreGridHour=1",
+     "parser": parser_france_inter},
+    {"name": "France Musique",
+     "pattern": "francemusique",
+     "url": "https://www.francemusique.fr/programmes?xmlHttpRequest=1",
+     "parser": parser_france_inter},
+    {"name": "TSF Jazz",
+     "pattern": "tsfjazz",
+     "url": "https://api.tsfjazz.com/api/tracklists/current/TSF?radio=TSF",
+     "parser": parser_tsfjazz},
+]
+
+
+#############
+# Main
+#############
+
+def usage():
+    print("""Radio helper
+        ./{} stream_url""".format(sys.argv[0]))
+
+
+if len(sys.argv) < 2:
+    usage()
+    sys.exit(-1)
+
+stream_url = sys.argv[1]
+for i in INDEX:
+    if i['pattern'] in stream_url:
+        r = requests.get(i['url'])
+        title = i['parser'](r.text)
+        if title:
+            sys.stdout.write(title)
+            sys.stdout.flush()
+            sys.exit(0)
+        else:
+            break
+sys.exit(1)
