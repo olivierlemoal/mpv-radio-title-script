@@ -11,6 +11,7 @@ Currently compatible radios are currently only French radio :
   * France Musique
   * France culture
   * TSF Jazz
+  * RFI
 
 It should be easy to add support for any radio, editing the `radio_title_helper`. Just create a parser function that returns title and add your radio to `INDEX` :
 ```python

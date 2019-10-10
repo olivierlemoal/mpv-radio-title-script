@@ -18,7 +18,7 @@ def parser_fip(res):
     return "{} - {}".format(artists, title)
 
 
-def parser_france_inter(res):
+def parser_radio_france(res):
     res = json.loads(res)
     now = datetime.now()
     timestamp = datetime.timestamp(now)
@@ -34,6 +34,11 @@ def parser_france_inter(res):
 def parser_tsfjazz(res):
     res = json.loads(res)
     return "{} - {}".format(res['artist'], res['title'])
+
+
+def parser_rfi(res):
+    res = json.loads(res)
+    return "{}".format(res['currentProgramTitle'])
 
 
 #############
@@ -77,15 +82,23 @@ INDEX = [
     {"name": "France Culture",
      "pattern": "franceculture",
      "url": "https://www.franceculture.fr/ajax/program/live",
-     "parser": parser_france_inter},
+     "parser": parser_radio_france},
     {"name": "France Inter",
      "pattern": "franceinter",
      "url": "https://www.franceinter.fr/programmes?xmlHttpRequest=1&ignoreGridHour=1",
-     "parser": parser_france_inter},
+     "parser": parser_radio_france},
     {"name": "France Musique",
      "pattern": "francemusique",
      "url": "https://www.francemusique.fr/programmes?xmlHttpRequest=1",
-     "parser": parser_france_inter},
+     "parser": parser_radio_france},
+    {"name": "RFI Afrique",
+     "pattern": "rfiafrique",
+     "url": "http://www.rfi.fr/current-program-grid-info/afrique/?xmlHttpRequest=1",
+     "parser": parser_rfi},
+    {"name": "RFI Monde",
+     "pattern": "rfimonde",
+     "url": "http://www.rfi.fr/current-program-grid-info/monde/?xmlHttpRequest=1",
+     "parser": parser_rfi},
     {"name": "TSF Jazz",
      "pattern": "tsfjazz",
      "url": "https://api.tsfjazz.com/api/tracklists/current/TSF?radio=TSF",
@@ -107,17 +120,18 @@ if len(sys.argv) < 2:
     sys.exit(-1)
 
 stream_url = sys.argv[1]
+
+# Some radio (RFI) need spoofed UA
+headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0"}
+
 for i in INDEX:
     if i['pattern'] in stream_url:
-        r = requests.get(i['url'])
-        try:
-            title = i['parser'](r.text)
-            if title:
-              sys.stdout.write(title)
-              sys.stdout.flush()
-              sys.exit(0)
-            else:
-                break
-        except Exception:
-            sys.exit(1)
+        r = requests.get(i['url'], headers=headers)
+        title = i['parser'](r.text)
+        if title:
+            sys.stdout.write(title)
+            sys.stdout.flush()
+            sys.exit(0)
+        else:
+            break
 sys.exit(1)
