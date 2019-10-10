@@ -127,11 +127,15 @@ headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:70.0) Gecko/2010010
 for i in INDEX:
     if i['pattern'] in stream_url:
         r = requests.get(i['url'], headers=headers)
-        title = i['parser'](r.text)
-        if title:
-            sys.stdout.write(title)
-            sys.stdout.flush()
-            sys.exit(0)
-        else:
-            break
+        try:
+            title = i['parser'](r.text)
+            if title:
+                sys.stdout.write(title)
+                sys.stdout.flush()
+                sys.exit(0)
+            else:
+                break
+        except Exception:
+            # Parser failed, do no handle
+            sys.exit(1)
 sys.exit(1)
