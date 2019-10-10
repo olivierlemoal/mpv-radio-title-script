@@ -45,7 +45,7 @@ local settings = {
 git clone https://github.com/olivierlemoal/mpv-radio-title-script
 mv mpv-radio-title-script/radio_title_helper /usr/local/bin/
 mv mpv-radio-title-script/radio_title.lua ~/.config/mpv/script
-python3 -m pip install --user -r requirements.txt
+python3 -m pip install --user -r mpv-radio-title-script/requirements.txt
 ```
 
 
