@@ -12,10 +12,10 @@ require 'mp.options'
 read_options(settings, "radiotitle")
 local msg = require 'mp.msg'
 local utils = require 'mp.utils'
+local has_failed = false -- We may not have title during ads, no need to display multiple error messages
 
 function get_song_name()
   local radio_url = mp.get_property('stream-open-filename')
-  local has_failed = false -- We may not have title during ads, no need to display multiple error messages
   t = {}  
   t.args = {settings.radio_title_helper, radio_url}
   res = utils.subprocess(t)
