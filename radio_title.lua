@@ -15,13 +15,16 @@ local utils = require 'mp.utils'
 
 function get_song_name()
   local radio_url = mp.get_property('stream-open-filename')
+  local has_failed = false -- We may not have title during ads, no need to display multiple error messages
   t = {}  
   t.args = {settings.radio_title_helper, radio_url}
   res = utils.subprocess(t)
   if res.status == 0 then
+      has_failed = false
       return res.stdout
-  else
-      mp.msg.error("Could not retrieve title")
+  elseif not has_failed then
+      has_failed = true
+      mp.msg.warn("Could not retrieve title")
   end
 end
 
