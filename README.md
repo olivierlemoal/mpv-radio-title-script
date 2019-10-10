@@ -4,7 +4,7 @@ This script fetch radio current playing title directly from the radio website wh
 
 ![example](/readme.png)
 
-Currently compatible radios are currently only French radio :
+Compatible radios are currently only French stations :
 
   * FIP (all radios)
   * France Inter
@@ -19,7 +19,7 @@ INDEX = [
     {"name": "TSF Jazz",
      "pattern": "tsfjazz", # Pattern to be found in stream url sent by lua script
      "url": "https://api.tsfjazz.com/api/tracklists/current/TSF?radio=TSF",
-     "parser": parser_tsfjazz},
+     "parser": parser_tsfjazz
      },
      # [...]
 ]
