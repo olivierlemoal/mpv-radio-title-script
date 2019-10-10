@@ -5,6 +5,7 @@ import json
 from datetime import datetime
 import requests
 
+DEBUG=False
 
 #############
 # Parsers
@@ -134,8 +135,14 @@ for i in INDEX:
                 sys.stdout.flush()
                 sys.exit(0)
             else:
-                break
-        except Exception:
-            # Parser failed, do no handle
+                if DEBUG:
+                    print("No title found")
+                sys.exit(1)
+        except Exception as e:
+            # Parser failed, do not handle
+            if DEBUG:
+                raise e
             sys.exit(1)
+if DEBUG:
+    print("No matching pattern found")
 sys.exit(1)
