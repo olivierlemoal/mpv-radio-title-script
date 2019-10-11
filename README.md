@@ -1,4 +1,4 @@
-# mpv-radio-title-script
+# mpv radio title
 
 This script fetch radio current playing title directly from the radio website when it is not announced by the stream.
 
