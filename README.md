@@ -4,7 +4,7 @@ This script fetch radio current playing title directly from the radio website wh
 
 ![example](/readme.png)
 
-Compatible radios are currently only French stations :
+Compatible radios are currently mainly French stations :
 
   * FIP (all radios)
   * France Inter
@@ -12,6 +12,9 @@ Compatible radios are currently only French stations :
   * France culture
   * TSF Jazz
   * RFI
+  
+ But also
+  * [KEXP](https://www.kexp.org/)
 
 It should be easy to add support for any radio, editing the `radio_title_helper`. Just create a parser function that returns title and add your radio to `INDEX` :
 ```python
