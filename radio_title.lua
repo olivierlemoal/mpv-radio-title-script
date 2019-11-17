@@ -5,7 +5,7 @@
 local settings = {
     radio_title_helper = "/usr/local/bin/radio_title_helper", -- Path to Radio title helper
     interval = 10, -- Renew every 10 seconds (default)
-    radios = {"fip", "franceculture", "francemusique", "tsfjazz", "franceinter", "rfimonde", "rfiafrique"}, -- enable script for these radios (keyword must be in stream url)
+    radios = {"fip", "franceculture", "francemusique", "tsfjazz", "franceinter", "rfimonde", "rfiafrique", "kexp"}, -- enable script for these radios (keyword must be in stream url)
 }
 
 require 'mp.options'

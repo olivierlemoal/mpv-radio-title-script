@@ -42,6 +42,11 @@ def parser_rfi(res):
     return "{}".format(res['currentProgramTitle'])
 
 
+def parser_kexp(res):
+    res = json.loads(res)["results"][0]
+    return "{} - {}".format(res["artist"]["name"], res["track"]["name"])
+
+
 #############
 # Webradio Index
 #############
@@ -104,6 +109,10 @@ INDEX = [
      "pattern": "tsfjazz",
      "url": "https://api.tsfjazz.com/api/tracklists/current/TSF?radio=TSF",
      "parser": parser_tsfjazz},
+    {"name": "KEXP",
+     "pattern": "kexp",
+     "url": "https://legacy-api.kexp.org/play/?format=json&limit=1",
+     "parser": parser_kexp},
 ]
 
 
@@ -113,7 +122,7 @@ INDEX = [
 
 def usage():
     print("""Radio helper
-        ./{} stream_url""".format(sys.argv[0]))
+        {} stream_url""".format(sys.argv[0]))
 
 
 if len(sys.argv) < 2:
