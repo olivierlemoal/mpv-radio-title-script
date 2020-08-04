@@ -37,7 +37,7 @@ Edit `radio_title.lua`
 
 ```lua
 local settings = {
-    radio_title_helper = "/usr/local/bin/radio_title_helper", -- Path to Radio title helper
+    radio_title_helper = "radio_title_helper", -- Path to Radio title helper
     interval = 10, -- Renew every 10 seconds (default)
     radios = {"fip", "franceculture", "francemusique", "tsfjazz", "franceinter"}, -- enable script for these radios (keyword must be in stream url)
 }
@@ -47,6 +47,7 @@ local settings = {
 
 ```bash
 git clone https://github.com/olivierlemoal/mpv-radio-title-script
+# move helper in your $PATH
 mv mpv-radio-title-script/radio_title_helper /usr/local/bin/
 mv mpv-radio-title-script/radio_title.lua ~/.config/mpv/script
 python3 -m pip install --user -r mpv-radio-title-script/requirements.txt
