@@ -48,7 +48,7 @@ local settings = {
 ```bash
 git clone https://github.com/olivierlemoal/mpv-radio-title-script
 # move helper in your $PATH
-mv mpv-radio-title-script/radio_title_helper /usr/local/bin/
+mv mpv-radio-title-script/radio_title_helper ~/.local/bin/
 mv mpv-radio-title-script/radio_title.lua ~/.config/mpv/script
 python3 -m pip install --user -r mpv-radio-title-script/requirements.txt
 ```
